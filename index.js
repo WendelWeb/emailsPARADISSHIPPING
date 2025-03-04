@@ -42,7 +42,7 @@ app.post('/send-email', async (req, res) => {
   const mailOptions = {
     from: `"Pnice Shipping Services" <${process.env.EMAIL_USER}>`,
     to: userEmail,
-    subject: `Mise à jour de votre colis ${packageId} - Pnice Shipping Services`,
+    subject: `Pnice Shipping Services  - Mise à jour de votre colis ${packageId}`,
     text: message, // Utilise le message envoyé par le frontend
   };
 
