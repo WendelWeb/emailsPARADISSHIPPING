@@ -6,9 +6,10 @@ require('dotenv').config();
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Configuration CORS correcte
+// Configuration CORS correcte 
+
 app.use(cors({
-  origin: ['http://localhost:5174', 'http://localhost:5173', 'https://ton-frontend-deploye.com'], // Origines autorisées
+  origin: ['http://localhost:5174', 'http://localhost:5173', 'https://pniceshipping.vercel.app'], // Origines autorisées
   methods: ['GET', 'POST', 'OPTIONS'], // Méthodes HTTP autorisées
   allowedHeaders: ['Content-Type'], // En-têtes autorisés
 }));
