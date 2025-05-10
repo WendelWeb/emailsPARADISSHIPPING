@@ -23,14 +23,22 @@ app.options('*', cors(corsOptions));
 
 app.use(express.json());
 
+// const transporter = nodemailer.createTransport({
+//   service: 'gmail',
+//   auth: {
+//     user: process.env.EMAIL_USER,
+//     pass: process.env.EMAIL_PASS,
+//   },
+// });
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: 'smtp.zoho.com',
+  port: 587,
+  secure: false, // Utilisez STARTTLS
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
 });
-
 // SMTP Connection Verification
 transporter.verify((error, success) => {
   if (error) {
