@@ -8,7 +8,7 @@ const port = process.env.PORT || 3000;
 
 // Comprehensive CORS Configuration
 const corsOptions = {
-  origin: ['http://localhost:5174','http://localhost:5175', 'http://localhost:5173', 'https://pniceshipping.vercel.app', 'https://pniceshipping.com', 'https://www.pniceshipping.com'], 
+  origin: ['http://localhost:5174','http://localhost:5175', 'http://localhost:5173', 'https://paradisshipping.vercel.app', 'https://paradishipping.com', 'https://www.paradishipping.com'], 
   methods: ['GET', 'POST', 'OPTIONS'], 
   allowedHeaders: ['Content-Type', 'Authorization'], 
   credentials: true, // Allow credentials (cookies, authorization headers)
@@ -56,9 +56,9 @@ app.post('/send-email', async (req, res) => {
   }
 
   const mailOptions = {
-    from: `"Pnice Shipping Services" <${process.env.EMAIL_USER}>`,
+    from: `"Paradis Shipping " <${process.env.EMAIL_USER}>`,
     to: userEmail,
-    subject: `Pnice Shipping Services - Package ${packageId} Update`,
+    subject: `Paradis Shipping - Package ${packageId} Update`,
     text: message,
   };
 
