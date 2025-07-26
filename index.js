@@ -33,11 +33,17 @@ app.use(express.json());
 const transporter = nodemailer.createTransport({
   host: 'smtp.zoho.com',
   port: 587,
-  secure: false, // Utilisez STARTTLS
+  secure: false,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
+  tls: {
+    rejectUnauthorized: false,
+    ciphers: 'SSLv3'
+  },
+  debug: true, // Active les logs détaillés
+  logger: true
 });
 // SMTP Connection Verification
 transporter.verify((error, success) => {
