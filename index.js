@@ -11,24 +11,34 @@ const corsOptions = {
   origin: ['http://localhost:5174','http://localhost:5175', 'http://localhost:5173', 'https://paradisshipping.vercel.app', 'https://paradishipping.com', 'https://www.paradishipping.com'], 
   methods: ['GET', 'POST', 'OPTIONS'], 
   allowedHeaders: ['Content-Type', 'Authorization'], 
-  credentials: true,
-  optionsSuccessStatus: 200
+  credentials: true, // Allow credentials (cookies, authorization headers)
+  optionsSuccessStatus: 200 // Some legacy browsers (IE11) choke on 204
 };
 
+// Apply CORS middleware
 app.use(cors(corsOptions));
+
+// Preflight route to handle OPTIONS requests explicitly
 app.options('*', cors(corsOptions));
+
 app.use(express.json());
 
-const transporter = nodemailer.createTransporter({
+// const transporter = nodemailer.createTransport({
+//   service: 'gmail',
+//   auth: {
+//     user: process.env.EMAIL_USER,
+//     pass: process.env.EMAIL_PASS,
+//   },
+// });
+const transporter = nodemailer.createTransport({
   host: 'smtp.zoho.com',
   port: 587,
-  secure: false,
+  secure: false, // Utilisez STARTTLS
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
 });
-
 // SMTP Connection Verification
 transporter.verify((error, success) => {
   if (error) {
@@ -38,47 +48,26 @@ transporter.verify((error, success) => {
   }
 });
 
-// Route de test pour vérifier que l'API fonctionne
-app.get('/', (req, res) => {
-  res.json({ 
-    message: 'Paradis Shipping Email Service is running',
-    status: 'OK',
-    timestamp: new Date().toISOString()
-  });
-});
-
 app.post('/send-email', async (req, res) => {
-  const { userName, userEmail, packageId, status, message, htmlMessage } = req.body;
-
-  console.log('Received email request:', { userName, userEmail, packageId, status });
+  const { userName, userEmail, packageId, status, message } = req.body;
 
   if (!userName || !userEmail || !packageId || !status || !message) {
-    return res.status(400).json({ 
-      error: 'Missing required fields',
-      details: 'userName, userEmail, packageId, status, and message are required' 
-    });
+    return res.status(400).json({ error: 'All fields are required' });
   }
 
   const mailOptions = {
-    from: `"Paradis Shipping" <${process.env.EMAIL_USER}>`,
+    from: `"Paradis Shipping " <${process.env.EMAIL_USER}>`,
     to: userEmail,
-    subject: `Paradis Shipping - Colis ${packageId} - Mise à jour`,
+    subject: `Paradis Shipping - Package ${packageId} Update`,
     text: message,
-    html: htmlMessage || message // Utilise htmlMessage si disponible, sinon utilise message
   };
 
   try {
-    const result = await transporter.sendMail(mailOptions);
+    await transporter.sendMail(mailOptions);
     console.log('Email sent successfully to', userEmail);
-    console.log('Message ID:', result.messageId);
-    
-    res.status(200).json({ 
-      message: 'Email sent successfully',
-      messageId: result.messageId,
-      recipient: userEmail
-    });
+    res.status(200).json({ message: 'Email sent successfully' });
   } catch (error) {
-    console.error('Email sending error:', error);
+    console.error('Complete Error:', error);
     res.status(500).json({ 
       error: 'Error sending email', 
       details: error.message 
@@ -86,14 +75,6 @@ app.post('/send-email', async (req, res) => {
   }
 });
 
-// Route pour vérifier la santé du service
-app.get('/health', (req, res) => {
-  res.status(200).json({ 
-    status: 'healthy',
-    timestamp: new Date().toISOString()
-  });
-});
-
 app.listen(port, () => {
-  console.log(`Paradis Shipping Email Service started on port ${port}`);
+  console.log(`Server started on port ${port}`);
 });
