@@ -68,6 +68,12 @@ app.post('/send-email', async (req, res) => {
     res.status(200).json({ message: 'Email sent successfully' });
   } catch (error) {
     console.error('Complete Error:', error);
+    console.error('Erreur complète :', {
+    message: error.message,
+    stack: error.stack,
+    code: error.code,
+    response: error.response,
+  });
     res.status(500).json({ 
       error: 'Error sending email', 
       details: error.message 
